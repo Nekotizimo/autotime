@@ -11,6 +11,7 @@ function App() {
 
   const setTimerName = (id, name) => {
     setTimers(timers.map(t => (t.id === id ? {...t, name: name} : t)));
+    // console.log(timers);
   }
 
   return (

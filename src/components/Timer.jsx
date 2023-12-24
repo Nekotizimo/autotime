@@ -1,13 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, createRef, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit } from '@fortawesome/free-regular-svg-icons'
 import ControlledInput from './ControlledInput';
+import ContentEditable from 'react-contenteditable'
 
 const Timer = ({name, durationInSecs, setTimerName, id}) => {
   const [running, setRunning] = useState(false);
   const [started, setStarted] = useState(false);
   const [over, setOver] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(durationInSecs);
+  const contentEditable = createRef();
+  const nameRef = useRef(name);
 
   const tick = () => {
     if (!running || !started) {
@@ -67,23 +70,36 @@ const Timer = ({name, durationInSecs, setTimerName, id}) => {
   }
 
   const handleNameChange = (e) => {
-    setTimerName(id, e.target.value);
+    nameRef.current = e.target.value;
+    // console.log(nameRef.current);
+    // setTimerName(id, e.target.value);
   }
 
+  const handleNameBlur = (e) => {
+    // console.log(e);
+    setTimerName(id, e.target.textContent);
+  }
 
 
   return (
     <div className="timer">
       <div>
         <div className='timer-name editable'>
-          <ControlledInput
+          {/* <ControlledInput
             value={name}
-            onChange={handleNameChange}/>
+            onChange={handleNameChange}/> */}
+          <ContentEditable
+            innerRef={contentEditable}
+            html={nameRef.current}
+            onChange={handleNameChange}
+            onBlur={handleNameBlur}
+            className='content-editable'
+          />
           <FontAwesomeIcon icon={faEdit} fixedWidth pull="right" color='gray'/>
         </div>
-        <h2>{durationToText(timeRemaining)}</h2>
+        <h2 className='timer-numbers'>{durationToText(timeRemaining)}</h2>
       </div>
-      <div>
+      <div className='btn-container'>
         <button 
           className="btn stop-btn" 
           disabled={!started} 

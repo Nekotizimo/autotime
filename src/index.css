@@ -73,14 +73,18 @@ body {
     transform: scale(1);
   }
 }
+/* ============= Timer Name ============== */
 .timer-name {
   border-radius: 3px;
   padding: 3px;
+  display: flex;
+  align-items: center;
 }
-.timer-name>input {
+.timer-name>.content-editable {
   border: none;
   background: none;
   margin: none;
+  padding: 2px;
   color: var(--text); 
   font-weight: bold;
   font-size: 1.1em;
@@ -92,7 +96,16 @@ body {
   background-color: rgb(238, 238, 238);
 }
 
+/* ============= Timer numbers ============== */
+.timer-numbers {
+  padding: 5px;
+}
+
+
 /* ============= Timer buttons ============== */
+.btn-container {
+  display: flex;
+}
 .btn {
   cursor: pointer;
   background-repeat: no-repeat;
