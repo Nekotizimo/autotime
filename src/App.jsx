@@ -9,6 +9,10 @@ function App() {
     {name: "how long i last", durationInSeconds: 5, id: 3},
   ]);
 
+  const setTimerName = (id, name) => {
+    setTimers(timers.map(t => (t.id === id ? {...t, name: name} : t)));
+  }
+
   return (
     <div>
       {timers.map((timer) => {
@@ -17,6 +21,8 @@ function App() {
           <Timer
             name={name}
             durationInSecs={durationInSeconds}
+            setTimerName={setTimerName}
+            id={id}
             key={id}
           />
         )

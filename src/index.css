@@ -73,6 +73,24 @@ body {
     transform: scale(1);
   }
 }
+.timer-name {
+  border-radius: 3px;
+  padding: 3px;
+}
+.timer-name>input {
+  border: none;
+  background: none;
+  margin: none;
+  color: var(--text); 
+  font-weight: bold;
+  font-size: 1.1em;
+}
+.editable {
+  transition: 0.3s;
+}
+.editable:hover {
+  background-color: rgb(238, 238, 238);
+}
 
 /* ============= Timer buttons ============== */
 .btn {

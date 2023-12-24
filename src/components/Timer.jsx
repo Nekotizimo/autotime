@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEdit } from '@fortawesome/free-regular-svg-icons'
+import ControlledInput from './ControlledInput';
 
-const Timer = ({name, durationInSecs}) => {
+const Timer = ({name, durationInSecs, setTimerName, id}) => {
   const [running, setRunning] = useState(false);
   const [started, setStarted] = useState(false);
   const [over, setOver] = useState(false);
@@ -18,30 +21,6 @@ const Timer = ({name, durationInSecs}) => {
       setTimeRemaining(timeRemaining - 1);
     }
   };
-
-  useEffect(() => {
-    let ticker = setInterval(() => tick(), 1000);
-    return () => {
-      clearInterval(ticker);
-    };
-  });
-
-  const handleStart = () => {
-    setStarted(true);
-    setRunning(true);
-    setOver(false);
-  }
-
-  const handlePause = () => {
-    setRunning(false);
-  }
-
-  const handleStop = () => {
-    setStarted(false);
-    setRunning(false);
-    setOver(false);
-    setTimeRemaining(durationInSecs);
-  }
 
   const durationToText = (durationInSeconds) => {
     var res = "";
@@ -61,18 +40,63 @@ const Timer = ({name, durationInSecs}) => {
     res += seconds.toString();
     // console.log(res);
     return res;
+  };
+
+  useEffect(() => {
+    let ticker = setInterval(() => tick(), 1000);
+    return () => {
+      clearInterval(ticker);
+    };
+  });
+
+  const handleStart = () => {
+    setStarted(true);
+    setRunning(true);
+    setOver(false);
+  };
+
+  const handlePause = () => {
+    setRunning(false);
+  };
+
+  const handleStop = () => {
+    setStarted(false);
+    setRunning(false);
+    setOver(false);
+    setTimeRemaining(durationInSecs);
   }
+
+  const handleNameChange = (e) => {
+    setTimerName(id, e.target.value);
+  }
+
+
 
   return (
     <div className="timer">
       <div>
-        <h4>{name}</h4>
+        <div className='timer-name editable'>
+          <ControlledInput
+            value={name}
+            onChange={handleNameChange}/>
+          <FontAwesomeIcon icon={faEdit} fixedWidth pull="right" color='gray'/>
+        </div>
         <h2>{durationToText(timeRemaining)}</h2>
       </div>
       <div>
-        <button className="btn stop-btn" disabled={!started} onClick={handleStop}></button>
-        { !running && <button className="btn start-btn" disabled={over} onClick={handleStart}></button> }
-        { running && <button className="btn pause-btn" onClick={handlePause}></button> }
+        <button 
+          className="btn stop-btn" 
+          disabled={!started} 
+          onClick={handleStop}></button>
+        { !running && 
+        <button 
+          className="btn start-btn" 
+          disabled={over} 
+          onClick={handleStart}></button> }
+        { running && 
+        <button 
+          className="btn pause-btn" 
+          onClick={handlePause}></button> }
       </div>
     </div>
   )
