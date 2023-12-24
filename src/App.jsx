@@ -6,6 +6,7 @@ function App() {
   const [timers, setTimers] = useState([
     {name: "Poached Egg", durationInSeconds: 390, id: 1},
     {name: "Plank", durationInSeconds: 45, id: 2},
+    {name: "how long i last", durationInSeconds: 5, id: 3},
   ]);
 
   return (
@@ -15,7 +16,7 @@ function App() {
         return (
           <Timer
             name={name}
-            durationInSeconds={durationInSeconds}
+            durationInSecs={durationInSeconds}
             key={id}
           />
         )

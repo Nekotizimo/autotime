@@ -86,6 +86,12 @@ body {
   margin-left: 10px;
 }
 
+.btn:disabled,
+.btn[disabled] {
+  filter: brightness(80%) contrast(80%);
+  cursor: default;
+}
+
 .stop-btn {
   background-image: url("/public/stop_icon.svg");
   background-size: 50%;
@@ -98,4 +104,11 @@ body {
   background-size: 60%;
   background-position: 9px;
   background-color: rgb(16, 179, 16);
+}
+
+.pause-btn {
+  background-image: url("/public/pause_icon.svg");
+  background-size: 65%;
+  background-position: 7px;
+  background-color: rgb(50, 138, 221);
 }
