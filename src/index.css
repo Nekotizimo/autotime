@@ -76,7 +76,6 @@ body {
 /* ============= Timer Name ============== */
 .timer-name {
   border-radius: 3px;
-  padding: 3px;
   display: flex;
   align-items: center;
 }
@@ -85,20 +84,28 @@ body {
   background: none;
   margin: none;
   padding: 2px;
-  color: var(--text); 
-  font-weight: bold;
-  font-size: 1.1em;
 }
 .editable {
   transition: 0.3s;
 }
-.editable:hover {
+.editable:hover:enabled {
   background-color: rgb(238, 238, 238);
+}
+.content-editable[disabled] {
+  cursor: default;
 }
 
 /* ============= Timer numbers ============== */
 .timer-numbers {
-  padding: 5px;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+}
+.timer-numbers>.content-editable {
+  border: none;
+  background: none;
+  margin: none;
+  padding: 2px;
 }
 
 

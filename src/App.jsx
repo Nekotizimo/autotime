@@ -13,18 +13,28 @@ function App() {
     setTimers(timers.map(t => (t.id === id ? {...t, name: name} : t)));
     // console.log(timers);
   }
+  const setTimerDuration = (id, durationSecs) => {
+    setTimers(timers.map(t => (t.id === id ? {...t, durationInSeconds: durationSecs} : t)));
+    // console.log(timers);
+  }
+
+  
 
   return (
     <div>
       {timers.map((timer) => {
         const {name, durationInSeconds, id} = timer;
+        const time = new Date();
+        time.setSeconds(time.getSeconds() + durationInSeconds); 
         return (
           <Timer
             name={name}
             durationInSecs={durationInSeconds}
             setTimerName={setTimerName}
+            setTimerDuration={setTimerDuration}
             id={id}
             key={id}
+            expiryTimestamp={time}
           />
         )
       })}
