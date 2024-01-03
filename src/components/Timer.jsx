@@ -1,12 +1,7 @@
-import { useState, useEffect, createRef, useRef } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit } from '@fortawesome/free-regular-svg-icons';
-// import ControlledInput from './ControlledInput';
-import ContentEditable from 'react-contenteditable';
-import durationToText from "../utilities/durationToText";
-import textToDurationSecs from "../utilities/textToDurationSecs";
+import { useState, createRef, useRef } from 'react';
 import { useTimer } from 'react-timer-hook';
 import TimerName from './TimerName';
+import TimerNumbers from './TimerNumbers';
 
 const Timer = ({ name, durationInSecs, setTimerName, setTimerDuration, id, expiryTimestamp }) => {
   const [started, setStarted] = useState(false);
@@ -33,7 +28,6 @@ const Timer = ({ name, durationInSecs, setTimerName, setTimerDuration, id, expir
     autoStart: false
   });
 
-
   const handleStart = () => {
     setOver(false);
     if (started) {
@@ -43,11 +37,9 @@ const Timer = ({ name, durationInSecs, setTimerName, setTimerDuration, id, expir
       setStarted(true);
     }
   };
-
   const handlePause = () => {
     pause();
   };
-
   const handleStop = () => {
     setStarted(false);
     setOver(false);
@@ -56,46 +48,25 @@ const Timer = ({ name, durationInSecs, setTimerName, setTimerDuration, id, expir
     restart(time, false);
   }
 
-  
-
-  const handleTimeBlur = (e) => {
-    const time = new Date();
-    const newDuration = textToDurationSecs(e.target.textContent);
-    if (newDuration === undefined) { // invalid newDuration
-      time.setSeconds(time.getSeconds() + durationInSecs); // use previous duration
-      restart(time, false);
-      alert("invalid time"); // TODO : notification
-    } else {
-      time.setSeconds(time.getSeconds() + newDuration);
-      restart(time, false);
-      setTimerDuration(id, newDuration);
-    }
-    // console.log("time blur");
-  }
-
-
   return (
     <div className="timer">
       <div>
-        <TimerName 
-          started={started} 
-          nameCERef={nameCERef} 
+        <TimerName
+          started={started}
+          nameCERef={nameCERef}
           nameRef={nameRef}
           setTimerName={setTimerName}
           id={id}>
         </TimerName>
-        <div className='timer-numbers editable'>
-          <ContentEditable
-            disabled={started}
-            innerRef={timeCERef}
-            html={durationToText(totalSeconds)}
-            // onChange={handleTimeChange}
-            onBlur={handleTimeBlur}
-            className='content-editable'
-            tagName="h2"
-          />
-          {!started && <FontAwesomeIcon icon={faEdit} fixedWidth pull="right" color='gray' />}
-        </div>
+        <TimerNumbers 
+          started={started} 
+          timeCERef={timeCERef} 
+          totalSeconds={totalSeconds} 
+          durationInSecs={durationInSecs}
+          restart={restart}
+          setTimerDuration={setTimerDuration}
+          id={id}>
+        </TimerNumbers>
 
         {/* <h2 className='timer-numbers'>{durationToText(timeRemaining)}</h2> */}
       </div>
