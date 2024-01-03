@@ -1,3 +1,4 @@
+import { React, createRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-regular-svg-icons';
 import ContentEditable from 'react-contenteditable';
@@ -5,6 +6,7 @@ import durationToText from "../utilities/durationToText";
 import textToDurationSecs from '../utilities/textToDurationSecs';
 
 const TimerNumbers = (props) => {
+  const timeCERef = createRef();
 
   const handleTimeBlur = (e) => {
     const time = new Date();
@@ -25,7 +27,7 @@ const TimerNumbers = (props) => {
     <div className='timer-numbers editable'>
       <ContentEditable 
         disabled={props.started} 
-        innerRef={props.timeCERef} 
+        innerRef={timeCERef} 
         html={durationToText(props.totalSeconds)}
         onBlur={handleTimeBlur} 
         className='content-editable' 

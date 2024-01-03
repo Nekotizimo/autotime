@@ -1,4 +1,4 @@
-import { useState, createRef, useRef } from 'react';
+import { useState } from 'react';
 import { useTimer } from 'react-timer-hook';
 import TimerName from './TimerName';
 import TimerNumbers from './TimerNumbers';
@@ -6,9 +6,6 @@ import TimerNumbers from './TimerNumbers';
 const Timer = ({ name, durationInSecs, setTimerName, setTimerDuration, id, expiryTimestamp }) => {
   const [started, setStarted] = useState(false);
   const [over, setOver] = useState(false);
-  const nameCERef = createRef();
-  const nameRef = useRef(name);
-  const timeCERef = createRef();
   const {
     totalSeconds,
     seconds,
@@ -53,22 +50,18 @@ const Timer = ({ name, durationInSecs, setTimerName, setTimerDuration, id, expir
       <div>
         <TimerName
           started={started}
-          nameCERef={nameCERef}
-          nameRef={nameRef}
+          name={name}
           setTimerName={setTimerName}
           id={id}>
         </TimerName>
         <TimerNumbers 
           started={started} 
-          timeCERef={timeCERef} 
           totalSeconds={totalSeconds} 
           durationInSecs={durationInSecs}
           restart={restart}
           setTimerDuration={setTimerDuration}
           id={id}>
         </TimerNumbers>
-
-        {/* <h2 className='timer-numbers'>{durationToText(timeRemaining)}</h2> */}
       </div>
       <div className='btn-container'>
         <button

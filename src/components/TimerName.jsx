@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, createRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-regular-svg-icons';
 import ContentEditable from 'react-contenteditable';
@@ -9,11 +9,13 @@ const API_KEY = "AIzaSyDaOPUPg0SGCJq3tX7gjVH9YzQFl1q39yA";
 const SEARCH_ENGINE_ID = "503ad2cc874b841f4";
 
 const TimerName = (props) => {
+  const nameCERef = createRef();
+  const nameRef = useRef(props.name);
   const [autocompleteResults, setAutocompleteResults] = useState([]);
   const [inputTimer, setInputTimer] = useState(null);
 
   const handleNameChange = (e) => {
-    props.nameRef.current = e.target.value;
+    nameRef.current = e.target.value;
 
     clearTimeout(inputTimer);
     let timeout = setTimeout(() => {
@@ -48,8 +50,8 @@ const TimerName = (props) => {
     <div className='timer-name editable'>
       <ContentEditable
         disabled={props.started}
-        innerRef={props.nameCERef}
-        html={props.nameRef.current}
+        innerRef={nameCERef}
+        html={nameRef.current}
         onChange={handleNameChange}
         onBlur={handleNameBlur}
         className='content-editable'
