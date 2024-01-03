@@ -18,8 +18,6 @@ function App() {
     // console.log(timers);
   }
 
-  
-
   return (
     <div>
       {timers.map((timer) => {
