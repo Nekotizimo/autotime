@@ -2,11 +2,28 @@ import React, { useState, useRef, createRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-regular-svg-icons';
 import ContentEditable from 'react-contenteditable';
-import axios from 'axios';
+import { getFunctions, httpsCallable } from "firebase/functions";
 
-// TODO: hide API keys
-const API_KEY = "AIzaSyDaOPUPg0SGCJq3tX7gjVH9YzQFl1q39yA";
-const SEARCH_ENGINE_ID = "503ad2cc874b841f4";
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyAhuXUl0U4FXaTqiV3B2Kbi27zcBdIL5m8",
+  authDomain: "kc-smart-timers.firebaseapp.com",
+  projectId: "kc-smart-timers",
+  storageBucket: "kc-smart-timers.appspot.com",
+  messagingSenderId: "692655789255",
+  appId: "1:692655789255:web:d593e7bc6aa74b2044dae2"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const functions = getFunctions(app ,'europe-west1');
+const getAutocompleteResults = httpsCallable(functions, 'getAutocompleteResults');
+const searchGoogle = httpsCallable(functions, "searchGoogle");
+
 
 const TimerName = (props) => {
   const nameCERef = createRef();
@@ -20,25 +37,16 @@ const TimerName = (props) => {
     clearTimeout(inputTimer);
     let timeout = setTimeout(() => {
       console.log("Fetching results...");
-      axios
-        .get(
-          `/autocomplete?q=how long to ${e.target.value}`
-        )
-        .then((res) => {
-          console.log(res.data);
-          setAutocompleteResults(res.data);
-          axios
-            .get('https://www.googleapis.com/customsearch/v1', {
-              params: {
-                "q": `how long to ${e.target.value}`,
-                "key": API_KEY,
-                "cx": SEARCH_ENGINE_ID
-              }
-            })
-            .then((res) => {
-              console.log(res.data["items"].map(e => e["snippet"]));
-            })
-        })
+      const res = getAutocompleteResults({ q: `how long to ${e.target.value}` });
+      res.then((res) => {
+        setAutocompleteResults(res.data);
+        console.log("autocompleteResults:", res.data)
+        const searchResults = searchGoogle({ q: `how long to ${e.target.value}${res.data[0]}`});
+        searchResults.then((searchResults) => {
+          console.log("searchResults:" , searchResults);
+        });
+      })
+      
     }, 300);
     setInputTimer(timeout);
   }
