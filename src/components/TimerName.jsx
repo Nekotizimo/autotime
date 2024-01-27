@@ -23,7 +23,7 @@ const app = initializeApp(firebaseConfig);
 const functions = getFunctions(app ,'europe-west1');
 const getAutocompleteResults = httpsCallable(functions, 'getAutocompleteResults');
 const searchGoogle = httpsCallable(functions, "searchGoogle");
-
+const queryQA = httpsCallable(functions, "queryQA");
 
 const TimerName = (props) => {
   const nameCERef = createRef();
@@ -41,9 +41,16 @@ const TimerName = (props) => {
       res.then((res) => {
         setAutocompleteResults(res.data);
         console.log("autocompleteResults:", res.data)
-        const searchResults = searchGoogle({ q: `how long to ${e.target.value}${res.data[0]}`});
+        const autocompletedQuery = `how long to ${e.target.value}${res.data[0] ? res.data[0] : ""}?`;
+        const searchResults = searchGoogle({ q: autocompletedQuery});
         searchResults.then((searchResults) => {
           console.log("searchResults:" , searchResults);
+          queryQA({"inputs": {
+            "question": autocompletedQuery,
+            "context": searchResults.data[0]
+          }}).then((response) => {
+            console.log(JSON.stringify(response));
+          });
         });
       })
       

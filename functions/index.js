@@ -4,14 +4,7 @@ const logger = require("firebase-functions/logger");
 const {defineSecret} = require("firebase-functions/params");
 const CUSTOM_SEARCH_API_KEY = defineSecret("CUSTOM_SEARCH_API_KEY");
 const SEARCH_ENGINE_ID = defineSecret("SEARCH_ENGINE_ID");
-
-
-// exports.testCustomSearchApiKey = onRequest(
-//     {secrets: [CUSTOM_SEARCH_API_KEY]},
-//     (req, res) => {
-//       const apiKey = CUSTOM_SEARCH_API_KEY.value();
-//       res.send(apiKey.slice(0, 10));
-//     });
+const HF_API_KEY = defineSecret("HF_API_KEY");
 
 functions.setGlobalOptions({maxInstances: 10});
 
@@ -56,5 +49,23 @@ exports.searchGoogle = functions.https.onCall(
       const snippets = axiosRes.data["items"].map((e) => e["snippet"]);
       logger.info(snippets[0]);
       return snippets.filter((snippet) => !!snippet);
+    },
+);
+
+exports.queryQA = functions.https.onCall(
+    {cors: true,
+      region: "europe-west1",
+      secrets: [HF_API_KEY]},
+    async (req) => {
+      const response = await fetch(
+          "https://api-inference.huggingface.co/models/deepset/roberta-base-squad2",
+          {
+            headers: {Authorization: `Bearer ${HF_API_KEY.value()}`},
+            method: "POST",
+            body: JSON.stringify(req.data),
+          },
+      );
+      const result = await response.json();
+      return result;
     },
 );
