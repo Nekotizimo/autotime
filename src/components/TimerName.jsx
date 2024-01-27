@@ -32,27 +32,32 @@ const TimerName = (props) => {
   const [inputTimer, setInputTimer] = useState(null);
 
   const handleNameChange = (e) => {
-    nameRef.current = e.target.value;
+    const curName = e.target.value;
+    nameRef.current = curName;
 
     clearTimeout(inputTimer);
-    let timeout = setTimeout(() => {
+    let timeout = setTimeout(async () => {
+
       console.log("Fetching results...");
-      const res = getAutocompleteResults({ q: `how long to ${e.target.value}` });
-      res.then((res) => {
-        setAutocompleteResults(res.data);
-        console.log("autocompleteResults:", res.data)
-        const autocompletedQuery = `how long to ${e.target.value}${res.data[0] ? res.data[0] : ""}?`;
-        const searchResults = searchGoogle({ q: autocompletedQuery});
-        searchResults.then((searchResults) => {
-          console.log("searchResults:" , searchResults);
-          queryQA({"inputs": {
-            "question": autocompletedQuery,
-            "context": searchResults.data[0]
-          }}).then((response) => {
-            console.log(JSON.stringify(response));
-          });
-        });
-      })
+      const autocompRes = getAutocompleteResults({ q: `how long to ${curName}` });
+      const autocompList = (await autocompRes).data;
+      setAutocompleteResults(autocompList);
+      console.log("autocompleteResults:", autocompList)
+
+      var autocompletedQuery = `how long to ${curName}${autocompList[0] ? autocompList[0] : ""}?`;
+      autocompletedQuery = autocompletedQuery.replace(/\&nbsp;/g, '');
+      const searchRes = searchGoogle({ q: autocompletedQuery});
+      const snippets = (await searchRes).data;
+      console.log("snippets:" , snippets);
+      
+      const QARes = queryQA({"inputs": {
+        "question": autocompletedQuery,
+        "context": snippets[0]
+      }});
+      // console.log(QARes);
+      const score = (await QARes).data.score;
+      const answer = (await QARes).data.answer;
+      console.log(score, answer);
       
     }, 300);
     setInputTimer(timeout);
