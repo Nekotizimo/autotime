@@ -9,11 +9,11 @@ function App() {
     {name: "how long i last", durationInSeconds: 5, id: 3},
   ]);
 
-  const setTimerName = (id, name) => {
+  const updateTimersName = (id, name) => {
     setTimers(timers.map(t => (t.id === id ? {...t, name: name} : t)));
     // console.log(timers);
   }
-  const setTimerDuration = (id, durationSecs) => {
+  const updateTimersDuration = (id, durationSecs) => {
     setTimers(timers.map(t => (t.id === id ? {...t, durationInSeconds: durationSecs} : t)));
     // console.log(timers);
   }
@@ -28,8 +28,8 @@ function App() {
           <Timer
             name={name}
             durationInSecs={durationInSeconds}
-            setTimerName={setTimerName}
-            setTimerDuration={setTimerDuration}
+            updateTimersName={updateTimersName}
+            updateTimersDuration={updateTimersDuration}
             id={id}
             key={id}
             expiryTimestamp={time}

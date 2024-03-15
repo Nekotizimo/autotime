@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-regular-svg-icons';
 import ContentEditable from 'react-contenteditable';
 import { getFunctions, httpsCallable } from "firebase/functions";
+import naturalTextToDurationSecs from '../utilities/naturalTextToDurationSecs.js';
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
@@ -30,6 +31,9 @@ const TimerName = (props) => {
   const nameRef = useRef(props.name);
   const [autocompleteResults, setAutocompleteResults] = useState([]);
   const [inputTimer, setInputTimer] = useState(null);
+  const setTimerName = props.setTimerName;
+  const setTimerDuration = props.setTimerDuration;
+  const id = props.id;
 
   const handleNameChange = (e) => {
     const curName = e.target.value;
@@ -48,7 +52,7 @@ const TimerName = (props) => {
       autocompletedQuery = autocompletedQuery.replace(/\&nbsp;/g, '');
       const searchRes = searchGoogle({ q: autocompletedQuery});
       const snippets = (await searchRes).data;
-      console.log("snippets:" , snippets);
+      console.log("snippets:" , snippets[0], snippets[1]);
       
       const QARes = queryQA({"inputs": {
         "question": autocompletedQuery,
@@ -58,12 +62,23 @@ const TimerName = (props) => {
       const score = (await QARes).data.score;
       const answer = (await QARes).data.answer;
       console.log(score, answer);
+      if (score > 0.5) {
+        const durationSecs = naturalTextToDurationSecs(answer);
+        if (durationSecs === undefined) {
+          alert("Google is doodoo");
+        } else {
+          console.log("Seconds to set:", durationSecs);
+          setTimerDuration(durationSecs);
+        }
+      } else {
+        alert("Not sure what time to set :(")
+      }
       
     }, 300);
     setInputTimer(timeout);
   }
   const handleNameBlur = (e) => {
-    props.setTimerName(props.id, e.target.textContent);
+    setTimerName(e.target.textContent);
   }
 
   return (

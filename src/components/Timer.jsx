@@ -3,7 +3,7 @@ import { useTimer } from 'react-timer-hook';
 import TimerName from './TimerName';
 import TimerNumbers from './TimerNumbers';
 
-const Timer = ({ name, durationInSecs, setTimerName, setTimerDuration, id, expiryTimestamp }) => {
+const Timer = ({ name, durationInSecs, updateTimersName, updateTimersDuration, id, expiryTimestamp }) => {
   const [started, setStarted] = useState(false);
   const [over, setOver] = useState(false);
   const {
@@ -44,6 +44,15 @@ const Timer = ({ name, durationInSecs, setTimerName, setTimerDuration, id, expir
     time.setSeconds(time.getSeconds() + durationInSecs); // 6:30 minutes timer
     restart(time, false);
   }
+  const setTimerDuration = (newDurationSecs) => {
+    const time = new Date();
+    time.setSeconds(time.getSeconds() + newDurationSecs);
+    restart(time, false);
+    updateTimersDuration(id, newDurationSecs);
+  }
+  const setTimerName = (name) => {
+    updateTimersName(id, name);
+  }
 
   return (
     <div className="timer">
@@ -52,6 +61,7 @@ const Timer = ({ name, durationInSecs, setTimerName, setTimerDuration, id, expir
           started={started}
           name={name}
           setTimerName={setTimerName}
+          setTimerDuration={setTimerDuration}
           id={id}>
         </TimerName>
         <TimerNumbers 

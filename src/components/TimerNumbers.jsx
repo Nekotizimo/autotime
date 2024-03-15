@@ -9,16 +9,12 @@ const TimerNumbers = (props) => {
   const timeCERef = createRef();
 
   const handleTimeBlur = (e) => {
-    const time = new Date();
     const newDuration = textToDurationSecs(e.target.textContent);
     if (newDuration === undefined) { // invalid newDuration
-      time.setSeconds(time.getSeconds() + props.durationInSecs); // use previous duration
-      props.restart(time, false);
+      props.setTimerDuration(props.durationInSecs); // use previous duration
       alert("invalid time"); // TODO : notification
     } else {
-      time.setSeconds(time.getSeconds() + newDuration);
-      props.restart(time, false);
-      props.setTimerDuration(props.id, newDuration);
+      props.setTimerDuration(newDuration); 
     }
     // console.log("time blur");
   }
