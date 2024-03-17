@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
-import Timer from './components/Timer';
+import TimerComponent from './components/TimerComponent';
 import { styled } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -12,6 +12,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
 import MoreIcon from '@mui/icons-material/MoreVert';
+import { v4 as uuidv4 } from 'uuid';
 
 const StyledFab = styled(Fab)({
   position: 'absolute',
@@ -22,21 +23,41 @@ const StyledFab = styled(Fab)({
   margin: '0 auto',
 });
 
+const testTimers = [
+  {name: "Poached Egg", durationInSeconds: 390, id: 1},
+  {name: "Plank", durationInSeconds: 45, id: 2},
+  {name: "how long i last", durationInSeconds: 5, id: 3},
+]
+
+class Timer { // TODO: shouldn't use classes?
+  constructor(name, durationInSeconds, id=uuidv4()) {
+    this.name = name;
+    this.durationInSeconds = durationInSeconds;
+    this.id = id;
+  }
+}
 
 function App() {
-  const [timers, setTimers] = useState([
-    {name: "Poached Egg", durationInSeconds: 390, id: 1},
-    {name: "Plank", durationInSeconds: 45, id: 2},
-    {name: "how long i last", durationInSeconds: 5, id: 3},
-  ]);
+  const [timers, setTimers] = useState(() => {
+    // getting stored timers
+    const saved = localStorage.getItem("timers");
+    const initialValue = JSON.parse(saved);
+    return initialValue || [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("timers", JSON.stringify(timers));
+  }, [timers]);
 
   const updateTimersName = (id, name) => {
     setTimers(timers.map(t => (t.id === id ? {...t, name: name} : t)));
-    // console.log(timers);
   }
   const updateTimersDuration = (id, durationSecs) => {
     setTimers(timers.map(t => (t.id === id ? {...t, durationInSeconds: durationSecs} : t)));
-    // console.log(timers);
+  }
+  const addTimer = () => {
+    const newTimer = new Timer("New timer", 60)
+    setTimers([...timers, newTimer]);
   }
 
   return (
@@ -46,7 +67,7 @@ function App() {
         const time = new Date();
         time.setSeconds(time.getSeconds() + durationInSeconds); 
         return (
-          <Timer
+          <TimerComponent
             name={name}
             durationInSecs={durationInSeconds}
             updateTimersName={updateTimersName}
@@ -63,8 +84,8 @@ function App() {
           <IconButton color="inherit" aria-label="open drawer">
             <MenuIcon />
           </IconButton>
-          <StyledFab color="secondary" aria-label="add">
-            <AddIcon />
+          <StyledFab color="secondary" aria-label="add" onClick={addTimer}>
+            <AddIcon/>
           </StyledFab>
           <Box sx={{ flexGrow: 1 }} />
           <IconButton color="inherit">

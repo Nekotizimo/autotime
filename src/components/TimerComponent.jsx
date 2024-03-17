@@ -3,7 +3,7 @@ import { useTimer } from 'react-timer-hook';
 import TimerName from './TimerName';
 import TimerNumbers from './TimerNumbers';
 
-const Timer = ({ name, durationInSecs, updateTimersName, updateTimersDuration, id, expiryTimestamp }) => {
+const TimerComponent = ({ name, durationInSecs, updateTimersName, updateTimersDuration, id, expiryTimestamp }) => {
   const [started, setStarted] = useState(false);
   const [over, setOver] = useState(false);
   const {
@@ -92,4 +92,4 @@ const Timer = ({ name, durationInSecs, updateTimersName, updateTimersDuration, i
   )
 };
 
-export default Timer;
+export default TimerComponent;
